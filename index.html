@@ -1,1 +1,192 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b09">
+  <title>AI.JEFFStudio</title>
+  <style>
+    :root {
+      --black: #080b09;
+      --panel: #121914;
+      --green: #20f078;
+      --white: #f5fff7;
+      --muted: #9aada0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--black);
+      color: var(--white);
+      font-family: Arial, sans-serif;
+    }
+    header {
+      padding: 20px;
+      border-bottom: 1px solid #24352a;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo {
+      background: var(--green);
+      color: #061109;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 900;
+    }
+    h1 { font-size: 20px; margin: 0; }
+    header p { color: var(--green); font-size: 11px; }
+    main { max-width: 650px; margin: auto; padding: 22px; }
+    h2 { font-size: 28px; margin-bottom: 8px; }
+    .muted { color: var(--muted); line-height: 1.6; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid #283b2d;
+      border-radius: 18px;
+      padding: 18px;
+      margin-top: 22px;
+    }
+    .upload {
+      display: block;
+      border: 2px dashed #33764b;
+      border-radius: 14px;
+      padding: 24px 12px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .upload strong { color: var(--green); }
+    input[type=file] { display: none; }
+    #preview {
+      display: none;
+      width: 100%;
+      max-height: 350px;
+      object-fit: contain;
+      margin-top: 16px;
+      border-radius: 12px;
+      background: #050705;
+    }
+    label { display: block; margin: 20px 0 9px; }
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #35483a;
+      background: #090e0a;
+      color: white;
+      font: inherit;
+      resize: vertical;
+    }
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 16px;
+      background: var(--green);
+      color: #061109;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: #24352a;
+      color: white;
+    }
+    #message {
+      color: var(--green);
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+    footer {
+      padding: 25px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">J</div>
+    <div>
+      <h1>AI.JEFFStudio</h1>
+      <p>CREATE • IMAGINE • GENERATE</p>
+    </div>
+  </header>
+
+  <main>
+    <h2>Bring your ideas to life.</h2>
+    <p class="muted">
+      Upload your photo and describe the AI video
+      you dream of creating.
+    </p>
+
+    <section class="panel">
+      <h3>1. Choose your photo</h3>
+      <label class="upload" for="photo">
+        <strong>＋ Select a photo</strong>
+        <p class="muted">Choose an image from your phone.</p>
+      </label>
+      <input id="photo" type="file" accept="image/*">
+      <img id="preview" alt="Your selected photo preview">
+
+      <label for="prompt">2. Describe your video</label>
+      <textarea id="prompt"
+        placeholder="Example: Make my portrait come alive, with cinematic lighting and a gentle camera movement."></textarea>
+
+      <button id="create">Create AI Video</button>
+      <p id="message" role="status"></p>
+    </section>
+  </main>
+
+  <footer>AI.JEFFStudio · Your creativity, your studio.</footer>
+
+  <script>
+    const photo = document.getElementById("photo");
+    const preview = document.getElementById("preview");
+    const message = document.getElementById("message");
+    let imageURL = "";
+
+    photo.addEventListener("change", () => {
+      if (imageURL) URL.revokeObjectURL(imageURL);
+      const file = photo.files[0];
+
+      if (!file) {
+        preview.style.display = "none";
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        message.textContent = "Please choose an image file.";
+        photo.value = "";
+        return;
+      }
+
+      imageURL = URL.createObjectURL(file);
+      preview.src = imageURL;
+      preview.style.display = "block";
+      message.textContent = "Photo selected successfully!";
+    });
+
+    document.getElementById("create").addEventListener("click", () => {
+      if (!photo.files.length) {
+        message.textContent = "Please select a photo first.";
+        return;
+      }
+
+      if (!document.getElementById("prompt").value.trim()) {
+        message.textContent = "Please describe the video you want.";
+        return;
+      }
+
+      message.textContent =
+        "Your photo and prompt are ready. Real AI video generation " +
+        "still needs a connected video-generation service. " +
+        "This starter app does not generate a video yet.";
+    });
+  </script>
+</body>
+</html>
+
