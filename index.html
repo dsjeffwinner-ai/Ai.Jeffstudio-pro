@@ -1,9 +1,10 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080b09">
   <title>AI.JEFFStudio</title>
   <style>
@@ -14,13 +15,16 @@
       --white: #f5fff7;
       --muted: #9aada0;
     }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       background: var(--black);
       color: var(--white);
       font-family: Arial, sans-serif;
     }
+
     header {
       padding: 20px;
       border-bottom: 1px solid #24352a;
@@ -28,6 +32,7 @@
       align-items: center;
       gap: 12px;
     }
+
     .logo {
       background: var(--green);
       color: #061109;
@@ -35,11 +40,14 @@
       border-radius: 12px;
       font-weight: 900;
     }
+
     h1 { font-size: 20px; margin: 0; }
-    header p { color: var(--green); font-size: 11px; }
+    header p { color: var(--green); font-size: 11px; margin: 5px 0 0; }
+
     main { max-width: 650px; margin: auto; padding: 22px; }
     h2 { font-size: 28px; margin-bottom: 8px; }
     .muted { color: var(--muted); line-height: 1.6; }
+
     .panel {
       background: var(--panel);
       border: 1px solid #283b2d;
@@ -47,6 +55,7 @@
       padding: 18px;
       margin-top: 22px;
     }
+
     .upload {
       display: block;
       border: 2px dashed #33764b;
@@ -55,8 +64,10 @@
       text-align: center;
       cursor: pointer;
     }
-    .upload strong { color: var(--green); }
-    input[type=file] { display: none; }
+
+    .upload strong { color: var(--green); font-size: 18px; }
+    input[type="file"] { display: none; }
+
     #preview {
       display: none;
       width: 100%;
@@ -66,10 +77,16 @@
       border-radius: 12px;
       background: #050705;
     }
-    label { display: block; margin: 20px 0 9px; }
+
+    label.field-label {
+      display: block;
+      margin: 20px 0 9px;
+      font-weight: bold;
+    }
+
     textarea {
       width: 100%;
-      min-height: 110px;
+      min-height: 120px;
       padding: 14px;
       border-radius: 12px;
       border: 1px solid #35483a;
@@ -78,80 +95,100 @@
       font: inherit;
       resize: vertical;
     }
+
     button {
       width: 100%;
+      padding: 17px;
+      margin-top: 18px;
       border: 0;
       border-radius: 12px;
-      padding: 15px;
-      margin-top: 16px;
       background: var(--green);
       color: #061109;
-      font-weight: bold;
-      font-size: 16px;
+      font-size: 18px;
+      font-weight: 800;
       cursor: pointer;
     }
-    button.secondary {
-      background: #24352a;
-      color: white;
-    }
+
+    button:disabled { opacity: 0.6; cursor: wait; }
+
     #message {
-      color: var(--green);
-      line-height: 1.6;
       overflow-wrap: anywhere;
+      white-space: pre-wrap;
+      line-height: 1.6;
     }
+
+    .small { font-size: 13px; }
     footer {
-      padding: 25px;
-      text-align: center;
+      padding: 20px;
       color: var(--muted);
+      text-align: center;
       font-size: 12px;
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo">J</div>
+    <div class="logo">AI</div>
     <div>
       <h1>AI.JEFFStudio</h1>
-      <p>CREATE • IMAGINE • GENERATE</p>
+      <p>YOUR IDEAS. YOUR CREATION.</p>
     </div>
   </header>
 
   <main>
-    <h2>Bring your ideas to life.</h2>
+    <h2>Create something amazing</h2>
     <p class="muted">
-      Upload your photo and describe the AI video
-      you dream of creating.
+      Choose a photo and describe the video you want to make.
     </p>
 
     <section class="panel">
-      <h3>1. Choose your photo</h3>
       <label class="upload" for="photo">
-        <strong>＋ Select a photo</strong>
-        <p class="muted">Choose an image from your phone.</p>
+        <strong>＋ Choose your photo</strong>
+        <p class="muted">Select an image from your phone</p>
       </label>
+
       <input id="photo" type="file" accept="image/*">
       <img id="preview" alt="Your selected photo preview">
 
-      <label for="prompt">2. Describe your video</label>
+      <label class="field-label" for="prompt">Describe your video</label>
       <textarea id="prompt"
-        placeholder="Example: Make my portrait come alive, with cinematic lighting and a gentle camera movement."></textarea>
+        placeholder="Example: Make this photo come alive with gentle camera movement and warm sunset lighting..."></textarea>
 
       <button id="create">Create AI Video</button>
-      <p id="message" role="status"></p>
+      <p id="message" class="muted" role="status">
+        Your photo stays selected on this page until you leave or refresh it.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>How it works</h2>
+      <p class="muted">
+        1. Choose a photo.<br>
+        2. Describe the video you imagine.<br>
+        3. Send your request to the AI.JEFFStudio backend.
+      </p>
+      <p class="muted small">
+        Actual video creation requires a connected video-generation provider.
+      </p>
     </section>
   </main>
 
-  <footer>AI.JEFFStudio · Your creativity, your studio.</footer>
+  <footer>AI.JEFFStudio · Create beyond imagination</footer>
 
   <script>
+    const BACKEND = "https://ai-jeffstudio-backend.onrender.com";
+
     const photo = document.getElementById("photo");
     const preview = document.getElementById("preview");
+    const promptBox = document.getElementById("prompt");
+    const createButton = document.getElementById("create");
     const message = document.getElementById("message");
-    let imageURL = "";
 
-    photo.addEventListener("change", () => {
-      if (imageURL) URL.revokeObjectURL(imageURL);
-      const file = photo.files[0];
+    let imageData = "";
+
+    photo.addEventListener("change", async () => {
+      const file = photo.files && photo.files[0];
+      imageData = "";
 
       if (!file) {
         preview.style.display = "none";
@@ -159,34 +196,91 @@
       }
 
       if (!file.type.startsWith("image/")) {
-        message.textContent = "Please choose an image file.";
+        message.textContent = "Please select an image file.";
         photo.value = "";
         return;
       }
 
-      imageURL = URL.createObjectURL(file);
-      preview.src = imageURL;
-      preview.style.display = "block";
-      message.textContent = "Photo selected successfully!";
+      message.textContent = "Preparing your photo...";
+      try {
+        imageData = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error("Could not read photo."));
+          reader.readAsDataURL(file);
+        });
+
+        preview.src = imageData;
+        preview.style.display = "block";
+        message.textContent = "Photo selected successfully!";
+      } catch (error) {
+        message.textContent = error.message;
+      }
     });
 
-    document.getElementById("create").addEventListener("click", () => {
-      if (!photo.files.length) {
-        message.textContent = "Please select a photo first.";
+    createButton.addEventListener("click", async () => {
+      const prompt = promptBox.value.trim();
+
+      if (!imageData) {
+        message.textContent = "Please choose a photo first.";
         return;
       }
 
-      if (!document.getElementById("prompt").value.trim()) {
+      if (!prompt) {
         message.textContent = "Please describe the video you want.";
         return;
       }
 
-      message.textContent =
-        "Your photo and prompt are ready. Real AI video generation " +
-        "still needs a connected video-generation service. " +
-        "This starter app does not generate a video yet.";
+      createButton.disabled = true;
+      message.textContent = "Connecting to AI.JEFFStudio backend...";
+
+      try {
+        const response = await fetch(BACKEND + "/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt: prompt,
+            image: imageData
+          })
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          if (response.status === 501) {
+            message.textContent =
+              "Your website reached the backend successfully, " +
+              "but video generation is not connected yet. " +
+              "The next step is connecting an AI video provider.";
+          } else {
+            message.textContent =
+              result.message || result.error ||
+              "The backend returned an error. Please try again.";
+          }
+          return;
+        }
+
+        message.textContent = result.message ||
+          "The backend received your request.";
+
+        if (result.videoUrl) {
+          const link = document.createElement("a");
+          link.href = result.videoUrl;
+          link.textContent = "Open your generated video";
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.style.color = "#20f078";
+          message.appendChild(document.createElement("br"));
+          message.appendChild(link);
+        }
+      } catch (error) {
+        message.textContent =
+          "Could not reach the backend. Check your internet connection " +
+          "and try again. If the service has been sleeping, wait a little.";
+      } finally {
+        createButton.disabled = false;
+      }
     });
   </script>
 </body>
 </html>
-
