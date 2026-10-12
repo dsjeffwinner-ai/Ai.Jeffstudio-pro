@@ -42,7 +42,7 @@ app.post("/api/generate", async (req, res) => {
         },
         body: JSON.stringify({
           name: "AI Jeffstudio Pro Video",
-          end_seconds: 5,
+          end_seconds: 30,
           aspect_ratio: "16:9",
           style: {
             prompt: prompt.trim()
